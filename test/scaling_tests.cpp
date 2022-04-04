@@ -307,7 +307,11 @@ TYPED_TEST(firpm_scaling_test, bandstop100)
 
     std::size_t degree = 100;
     pm::pmoutput_t<T> output1;
-    if(!std::is_same<T, mpfr::mpreal>::value) {
+
+#ifdef HAVE_MPFR
+    if(!std::is_same<T, mpfr::mpreal>::value)
+#endif
+    {
         std::cout << "START Parks-McClellan with uniform initialization\n";
         output1 = firpm<T>(degree * 2u, f, a, w);
         std::cout << "Final Delta     = " << output1.delta << std::endl;
@@ -332,7 +336,10 @@ TYPED_TEST(firpm_scaling_test, bandstop100)
     ASSERT_LT(output3.q, 1e-2);
     ASSERT_LE(pm::pmmath::fabs((output2.delta-output3.delta)/output2.delta), 2e-2);
 
-    if(!std::is_same<T, mpfr::mpreal>::value) {
+#ifdef HAVE_MPFR
+    if(!std::is_same<T, mpfr::mpreal>::value)
+#endif
+    {
         std::cout << "Iteration count reduction for final filter  RS: " << 1.0 - (double)output2.iter / output1.iter << std::endl;
         std::cout << "Iteration count reduction for final filter AFP: " << 1.0 - (double)output3.iter / output1.iter << std::endl;
         ASSERT_LE(pm::pmmath::fabs((output1.delta-output2.delta)/output1.delta), 2e-2);
@@ -464,7 +471,10 @@ TYPED_TEST(firpm_lebesgue_test, lowpass1000)
     // the AFP initialization (AFP is meant to be used in conjunction with
     // double/long double versions of the code for filter lengths that
     // are not too high (e.g. < 5000))
-    if(!std::is_same<T, mpfr::mpreal>::value) {
+#ifdef HAVE_MPFR
+    if(!std::is_same<T, mpfr::mpreal>::value)
+#endif
+    {
         std::cout << "START Parks-McClellan with AFP\n";
         output3 = firpmAFP<T>(degree * 2u, f, a, w);
         std::cout << "Final Delta     = " << output3.delta << std::endl;
@@ -760,7 +770,10 @@ TYPED_TEST(firpm_lebesgue_test, multiband600)
 
     pm::pmoutput_t<T> output3;
     // idem to lowpass1000
-    if(!std::is_same<T, mpfr::mpreal>::value) {
+#ifdef HAVE_MPFR
+    if(!std::is_same<T, mpfr::mpreal>::value)
+#endif
+    {
         std::cout << "START Parks-McClellan with AFP\n";
         output3 = firpmAFP<T>(degree * 2u, f, a, w, 1e-5);
         std::cout << "Final Delta     = " << output3.delta << std::endl;
