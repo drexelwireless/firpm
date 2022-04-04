@@ -308,6 +308,60 @@ namespace pm {
                 std::size_t nmax = 4u,
                 unsigned long prec = 165ul);
 
+    /*! Parks-McClellan routine for implementing type I and II FIR filters.
+    * This routine is the most general and can be set to use any of the three
+    * proposed initialization types. If the default parameters are used, then
+    * it will use uniform initialization.
+    * @param[in] n \f$n+1\f$ denotes the number of coefficients of the final 
+    * transfer function. For even n, the filter will be type I, while for odd 
+    * n the type is II.
+    * @param[in] f vector denoting the frequency ranges of each band of interest
+    * @param[in] a the ideal amplitude at each point of f
+    * @param[in] w the wight function value on each band
+    * @param[in] frf the frequency response function
+    * @param[in] eps convergence parameter threshold (i.e., quantizes the number 
+    * of significant digits of the minimax error that are accurate at the end of 
+    * the final iteration)
+    * @param[in] nmax the degree used by the CPR method on each subinterval
+    * @param[in] strategy initialization strategy. Can be UNIFORM, SCALING or AFP
+    * @param[in] depth in case the SCALING initialization strategy is used, 
+    * specifies the number of scaling levels to use (by default, the value is set
+    * to 1, meaning a filter of length approximatively n/2 is used to construct
+    * the initial reference for the requested n coefficient filter)
+    * @param[in] rstrategy in case SCALING is used, specifies how to initialize
+    * the smallest length filter used to perform reference scaling (UNIFORM by
+    * default)
+    * @param[in] prec the numerical precision of the MPFR type (will be disregarded for
+    * the double and long double instantiations of the functions)
+    * @return information pertaining to the polynomial computed at the last 
+    * iteration. The h vector of the output contains the coefficients corresponding 
+    * to the transfer function of the final filter (in this case, for types I and II,
+    * the values are symmetrical to the middle coefficient(s))
+    *
+    * An example of how to use this function is given below. It designs a degree 
+    * \f$100\f$ type I lowpass filter, with passband \f$[0, 0.4\pi]\f$ and stopband 
+    * \f$[0.5\pi, \pi]\f$. It has unit weight inside the passband and weight 10
+    * inside the stopband. More examples, including code on how to use the customized
+    * reference scaling and AFP versions <tt>firpmRS, firpmAFP</tt>, are provided inside 
+    * the test files.
+    * @code
+    * pmoutput_t<double> output = firpm<double>(200, {0.0, 0.4, 0.5, 1.0}, {1.0, 1.0, 0.0, 0.0}, {1.0, 10.0});
+    * @endcode
+    */
+
+    template<typename T>
+    pmoutput_t<T> firpmfrf(std::size_t n,
+                std::vector<T>const& f,
+                std::vector<T>const& a,
+                std::vector<T>const& w,
+                std::function<T(T, T, T, T, T, T)> frf,
+                double eps = 0.01,
+                std::size_t nmax = 4u,
+                init_t strategy = init_t::UNIFORM,
+                std::size_t depth = 0u,
+                init_t rstrategy = init_t::UNIFORM,
+                unsigned long prec = 165ul);
+
     /*! Parks-McClellan routine for implementing type III and IV FIR filters. 
     * This routine is the most general and can be set to use any of the three
     * proposed initialization types. If the default parameters are used, then
