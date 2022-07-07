@@ -88,7 +88,7 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 
 # add the test files and generate the test executables
 # they can be run by calling *make test* after the initial *make*
-enable_testing()
+#enable_testing()
 set(PROJECT_TEST_SCALING ${PROJECT_NAME_STR}_scaling_test)
 set(PROJECT_TEST_EXTENSIVE ${PROJECT_NAME_STR}_extensive_test)
 set(CMAKE_CTEST_COMMAND ctest -V)
