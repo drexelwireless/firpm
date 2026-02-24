@@ -52,7 +52,12 @@ if(DOXYGEN_FOUND)
     add_subdirectory(${PROJECT_SOURCE_DIR}/doc)
 endif()
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+# Toggle test targets and googletest bootstrap.
+option(FIRPM_BUILD_TESTS "Build firpm tests (downloads googletest)" ON)
+
+if(FIRPM_BUILD_TESTS)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+endif()
 
 #-----------------------------------------------------------------------
 # Python bindings
