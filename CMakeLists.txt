@@ -21,9 +21,17 @@ find_package(MPFR 4.0.0)
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG)
 
-if( MPFR_FOUND AND GMP_FOUND)
-    add_definitions(-DHAVE_MPFR)
-endif( MPFR_FOUND AND GMP_FOUND)
+set(FIRPM_HAVE_MPFR OFF)
+if(MPFR_FOUND AND GMP_FOUND)
+    set(MPREAL_HEADER mpreal.h)
+    find_path(MPREAL_INCLUDE_DIR NAMES ${MPREAL_HEADER})
+    if(MPREAL_INCLUDE_DIR)
+        set(FIRPM_HAVE_MPFR ON)
+        add_definitions(-DHAVE_MPFR)
+    else()
+        message(WARNING "${MPREAL_HEADER} not found; building firpm without MPFR support.")
+    endif()
+endif()
 
 #-----------------------------------------------------------------------
 # build configuration
@@ -35,17 +43,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #-----------------------------------------------------------------------
 # common include directories
 #-----------------------------------------------------------------------
-if( MPFR_FOUND AND GMP_FOUND )
-    set(MPREAL_HEADER mpreal.h)
-    find_path(MPREAL_INCLUDE_DIR NAMES ${MPREAL_HEADER})
-    if (NOT MPREAL_INCLUDE_DIR)
-        message(FATAL_ERROR "\t ${MPREAL_HEADER} header not found.")
-    endif()
+if(FIRPM_HAVE_MPFR)
     message("${MPREAL_HEADER} found in ${MPREAL_INCLUDE_DIR}")
     set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include ${MPFR_INCLUDES} ${MPREAL_INCLUDE_DIR})
 else()
     set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
-endif( MPFR_FOUND AND GMP_FOUND )
+endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)
 if(DOXYGEN_FOUND)

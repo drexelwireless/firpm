@@ -23,7 +23,7 @@ add_executable(${PROJECT_TEST_SCALING} ${TEST_SRC_SCALING})
 add_executable(${PROJECT_TEST_EXTENSIVE} ${TEST_SRC_EXTENSIVE})
 
 
-if( MPFR_FOUND AND GMP_FOUND )
+if(FIRPM_HAVE_MPFR)
     target_link_libraries(${PROJECT_TEST_SCALING}
         GTest::GTest pthread
         OpenMP::OpenMP_CXX
